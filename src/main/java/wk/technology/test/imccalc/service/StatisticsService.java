@@ -14,5 +14,7 @@ public interface StatisticsService {
 
     List<GenderRateObesityDTO> getIMCRateByGender();
 
+    Object getBloodTotalData();
+
     Object getBloodTypeData();
 }

@@ -6,10 +6,8 @@ import wk.technology.test.imccalc.domain.Paciente;
 import wk.technology.test.imccalc.domain.enums.PacienteSexo;
 import wk.technology.test.imccalc.repository.PacienteRepository;
 import wk.technology.test.imccalc.service.StatisticsService;
-import wk.technology.test.imccalc.service.dto.BloodTypeDataDTO;
-import wk.technology.test.imccalc.service.dto.GenderRateObesityDTO;
-import wk.technology.test.imccalc.service.dto.IMCAgeRangeDTO;
-import wk.technology.test.imccalc.service.dto.IMCMediaDTO;
+import wk.technology.test.imccalc.service.dto.*;
+import wk.technology.test.imccalc.utils.BloodUtil;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -112,7 +110,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public List<BloodTypeDataDTO> getBloodTypeData() {
+    public List<BloodTypeDataDTO> getBloodTotalData() {
         Date currenteDate = new Date();
         List<Paciente> pacientes = pacienteRepository.findAll();
         List<String> tipoSanguineos = pacientes.stream().map(Paciente::getTipoSanguineo).distinct().sorted().collect(Collectors.toList());
@@ -136,6 +134,28 @@ public class StatisticsServiceImpl implements StatisticsService {
 
 
         return dto;
+    }
+
+    @Override
+    public List<BloodTypeDTO> getBloodTypeData() {
+        List<Paciente> pacientes = this.pacienteRepository.findAll();
+        List<String> tiposSanguineos = pacientes.stream().map(Paciente::getTipoSanguineo).collect(Collectors.toList());
+        List<BloodTypeDTO> res = new ArrayList<>();
+
+        tiposSanguineos.forEach(tipo -> {
+            res.add(new BloodTypeDTO(tipo));
+        });
+
+        pacientes.forEach(paciente -> {
+            tiposSanguineos.forEach(tipo -> {
+                if (BloodUtil.canDonateTo(paciente.getTipoSanguineo(), tipo)) {
+                    BloodTypeDTO dto = res.stream().filter(o -> o.getTipoSanguineo().equals(tipo)).findFirst().get();
+                    dto.setDoadores(dto.getDoadores() + 1);
+//                    res./
+                }
+            });
+        });
+        return null;
     }
 
 

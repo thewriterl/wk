@@ -5,15 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import wk.technology.test.imccalc.domain.Estado;
 import wk.technology.test.imccalc.domain.enums.MensagemErro;
 import wk.technology.test.imccalc.service.StatisticsService;
-import wk.technology.test.imccalc.service.dto.GenderRateObesityDTO;
 import wk.technology.test.imccalc.utils.ErroConsulta;
 import wk.technology.test.imccalc.utils.WKException;
-
-import java.util.HashMap;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/statistic")
@@ -57,6 +52,16 @@ public class StatisticsResource {
     }
 
     @GetMapping("/blood")
+    public ResponseEntity<Object> getBloodTotalData() {
+        try {
+            return ResponseEntity.ok().body(statisticsService.getBloodTotalData());
+        } catch (WKException ex) {
+            ErroConsulta erroConsulta = new ErroConsulta(MensagemErro.ME_ERRO_AO_OBTER_ESTATISTICAS, HttpStatus.BAD_REQUEST, "", ex);
+            return ResponseEntity.badRequest().body(erroConsulta);
+        }
+    }
+
+    @GetMapping("/blood-type")
     public ResponseEntity<Object> getBloodTypeData() {
         try {
             return ResponseEntity.ok().body(statisticsService.getBloodTypeData());
