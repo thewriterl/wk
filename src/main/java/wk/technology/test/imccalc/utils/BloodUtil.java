@@ -17,37 +17,60 @@ public class BloodUtil {
 //        }
 //    }
 
+    public static Boolean canReceiveFrom(String tipoSanguineo, String fromBloodType) {
+         if (tipoSanguineo.contains("-")) {
+             switch (tipoSanguineo) {
+                 case "A-":
+                     return fromBloodType.equals("A-") || fromBloodType.equals("O-");
+                 case "B-":
+                     return fromBloodType.equals("B-") || fromBloodType.equals("O-");
+                 case "AB-":
+                     return fromBloodType.equals("A-") || fromBloodType.equals("B-") || fromBloodType.equals("O-") || fromBloodType.equals("AB-");
+                 case "O-":
+                     return fromBloodType.equals("O-");
+                 default:
+                     throw new WKException(MensagemErro.ME_ERRO_AO_OBTER_ESTATISTICAS);
+             }
+         } else {
+             switch (tipoSanguineo) {
+                 case "A+":
+                     return fromBloodType.equals("A-") || fromBloodType.equals("A+") || fromBloodType.equals("O-") || fromBloodType.equals("O+");
+                 case "B+":
+                     return fromBloodType.equals("B+") || fromBloodType.equals("B-") || fromBloodType.equals("O-") || fromBloodType.equals("O+");
+                 case "AB+":
+                     return true;
+                 case "O+":
+                     return fromBloodType.equals("O-") || fromBloodType.equals("O+");
+                 default:
+                     throw new WKException(MensagemErro.ME_ERRO_AO_OBTER_ESTATISTICAS);
+             }
+         }
+    }
+
     public static Boolean canDonateTo(String tipoSanguineo, String toBloodType) {
         if (tipoSanguineo.contains("-")) {
             switch (tipoSanguineo) {
                 case "A-":
-                    if (toBloodType.equals("A+") || toBloodType.equals("A-") || toBloodType.equals("AB+") || toBloodType.equals("AB-"))
-                    return true;
+                    return (toBloodType.equals("A+") || toBloodType.equals("A-") || toBloodType.equals("AB+") || toBloodType.equals("AB-"));
                 case "B-":
-                    if (toBloodType.equals("B+") || toBloodType.equals("B-") || toBloodType.equals("AB+") || toBloodType.equals("AB-"))
-                    return true;
+                    return (toBloodType.equals("B+") || toBloodType.equals("B-") || toBloodType.equals("AB+") || toBloodType.equals("AB-"));
                 case "O-":
                     return true;
                 case "AB-":
-                    if (toBloodType.equals("AB+") || toBloodType.equals("AB-"))
-                    return true;
+                    return (toBloodType.equals("AB+") || toBloodType.equals("AB-"));
                 default:
                     throw new WKException(MensagemErro.ME_ERRO_AO_OBTER_ESTATISTICAS);
             }
         } else {
             switch (tipoSanguineo) {
                 case "A+":
-                    if (toBloodType.equals("AB+") || toBloodType.equals("A+"))
-                        return true;
+                    return (toBloodType.equals("AB+") || toBloodType.equals("A+"));
                 case "B+":
-                    if (toBloodType.equals("B+") || toBloodType.equals("AB+") )
-                        return true;
+                    return (toBloodType.equals("B+") || toBloodType.equals("AB+"));
                 case "O+":
-                    if (toBloodType.equals("A+") || toBloodType.equals("B+") ||toBloodType.equals("AB+") ||  toBloodType.equals("O+"))
-                        return true;
+                    return (toBloodType.equals("A+") || toBloodType.equals("B+") ||toBloodType.equals("AB+") ||  toBloodType.equals("O+"));
                 case "AB+":
-                    if (toBloodType.equals("AB+"))
-                        return true;
+                    return  (toBloodType.equals("AB+"));
                 default:
                     throw new WKException(MensagemErro.ME_ERRO_AO_OBTER_ESTATISTICAS);
             }

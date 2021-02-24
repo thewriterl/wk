@@ -137,25 +137,31 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public List<BloodTypeDTO> getBloodTypeData() {
+    public BloodStatisticDTO getBloodTypeData() {
         List<Paciente> pacientes = this.pacienteRepository.findAll();
-        List<String> tiposSanguineos = pacientes.stream().map(Paciente::getTipoSanguineo).collect(Collectors.toList());
-        List<BloodTypeDTO> res = new ArrayList<>();
+        List<Paciente> pacientesCanDonate = pacientes.stream()
+                .filter(o -> getDistanceBetweenDates(o.getDataNascimento(), new Date()) >= 16)
+                .filter(o -> getDistanceBetweenDates(o.getDataNascimento(), new Date()) <= 69)
+                .filter(o -> o.getPeso() > 60)
+                .collect(Collectors.toList());
+
+        List<String> tiposSanguineos = pacientesCanDonate.stream()
+                .map(Paciente::getTipoSanguineo)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+
+        List<BloodTypeDTO> bloodData = new ArrayList<>();
 
         tiposSanguineos.forEach(tipo -> {
-            res.add(new BloodTypeDTO(tipo));
+            Integer podeDoar = Math.toIntExact(pacientesCanDonate.stream().filter(o -> BloodUtil.canDonateTo(o.getTipoSanguineo(), tipo)).count());
+            Integer podeReceber = Math.toIntExact(pacientesCanDonate.stream().filter(o -> BloodUtil.canReceiveFrom(o.getTipoSanguineo(), tipo)).count());
+            Integer totalTipoSanguineo = Math.toIntExact(pacientesCanDonate.stream().filter(o -> o.getTipoSanguineo().equals(tipo)).count());
+            BloodTypeDTO dto = new BloodTypeDTO(tipo, podeDoar, podeReceber, totalTipoSanguineo);
+            bloodData.add(dto);
         });
 
-        pacientes.forEach(paciente -> {
-            tiposSanguineos.forEach(tipo -> {
-                if (BloodUtil.canDonateTo(paciente.getTipoSanguineo(), tipo)) {
-                    BloodTypeDTO dto = res.stream().filter(o -> o.getTipoSanguineo().equals(tipo)).findFirst().get();
-                    dto.setDoadores(dto.getDoadores() + 1);
-//                    res./
-                }
-            });
-        });
-        return null;
+        return new BloodStatisticDTO(bloodData, pacientesCanDonate.size(), pacientes.size());
     }
 
 

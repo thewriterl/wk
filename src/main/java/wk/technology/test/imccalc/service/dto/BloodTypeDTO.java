@@ -3,17 +3,19 @@ package wk.technology.test.imccalc.service.dto;
 public class BloodTypeDTO {
 
     private String tipoSanguineo;
-    private Integer total;
-    private Integer doadores;
+    private Integer totalTipoSanguineo;
+    private Integer podeReceber;
+    private Integer podeDoar;
 
     public BloodTypeDTO() {
         super();
     }
 
-    public BloodTypeDTO(String tipoSanguineo) {
-        this.tipoSanguineo = tipoSanguineo;
-        this.setTotal(0);
-        this.setDoadores(0);
+    public BloodTypeDTO(String tipoSanguineo, Integer podeDoar, Integer podeReceber, Integer totalTipoSanguineo) {
+        this.setPodeReceber(podeDoar);
+        this.setPodeDoar(podeReceber);
+        this.setTotalTipoSanguineo(totalTipoSanguineo);
+        this.setTipoSanguineo(tipoSanguineo);
     }
 
     public String getTipoSanguineo() {
@@ -24,19 +26,28 @@ public class BloodTypeDTO {
         this.tipoSanguineo = tipoSanguineo;
     }
 
-    public Integer getTotal() {
-        return total;
+    public Integer getTotalTipoSanguineo() {
+        return totalTipoSanguineo;
     }
 
-    public void setTotal(Integer total) {
-        this.total = total;
+    public void setTotalTipoSanguineo(Integer totalTipoSanguineo) {
+        this.totalTipoSanguineo = totalTipoSanguineo;
     }
 
-    public Integer getDoadores() {
-        return doadores;
+    public Integer getPodeReceber() {
+        return podeReceber;
     }
 
-    public void setDoadores(Integer doadores) {
-        this.doadores = doadores;
+    public void setPodeReceber(Integer podeReceber) {
+        this.podeReceber = podeReceber;
+    }
+
+
+    public void setPodeDoar(Integer podeDoar) {
+        this.podeDoar = podeDoar;
+    }
+
+    public Integer getPodeDoar() {
+        return podeDoar;
     }
 }
