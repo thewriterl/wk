@@ -71,4 +71,14 @@ public class StatisticsResource {
         }
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Object> getTotalPacientes() {
+        try {
+            return ResponseEntity.ok().body(statisticsService.getTotalCount());
+        } catch (WKException ex) {
+            ErroConsulta erroConsulta = new ErroConsulta(MensagemErro.ME_ERRO_AO_OBTER_ESTATISTICAS, HttpStatus.BAD_REQUEST, "", ex);
+            return ResponseEntity.badRequest().body(erroConsulta);
+        }
+    }
+
 }

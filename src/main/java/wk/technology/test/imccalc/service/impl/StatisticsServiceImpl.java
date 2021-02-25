@@ -1,6 +1,7 @@
 package wk.technology.test.imccalc.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wk.technology.test.imccalc.domain.Estado;
 import wk.technology.test.imccalc.domain.Paciente;
 import wk.technology.test.imccalc.domain.enums.PacienteSexo;
@@ -34,6 +35,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EstadoEstatisticDTO> getStatisticsForUsersByState() {
         List<Paciente> pacientes = pacienteRepository.findAll();
         List<Estado> estados = pacientes.stream().map(o -> o.getEndereco().getEstado()).distinct().collect(Collectors.toList());
@@ -61,13 +63,14 @@ public class StatisticsServiceImpl implements StatisticsService {
         Double mediaIMC = pacientesOnRange.stream().mapToDouble(StatisticsServiceImpl::calculateIMC).sum() / pacientesOnRange.size();
 
         IMCAgeRangeDTO dto = new IMCAgeRangeDTO();
-        dto.setPacientes(pacientesOnRange);
+//        dto.setPacientes(pacientesOnRange);
         dto.setIMCmedio(mediaIMC);
 
         return dto;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<IMCMediaDTO> getIMCRateByAge() {
         List<Paciente> pacientes = pacienteRepository.findAll();
         Integer minAge = 0;
@@ -82,6 +85,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<GenderRateObesityDTO> getIMCRateByGender() {
         List<Paciente> pacientes = pacienteRepository.findAll();
 
@@ -112,6 +116,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BloodTypeDataDTO> getBloodTotalData() {
         Date currenteDate = new Date();
         List<Paciente> pacientes = pacienteRepository.findAll();
@@ -139,6 +144,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BloodStatisticDTO getBloodTypeData() {
         List<Paciente> pacientes = this.pacienteRepository.findAll();
         List<Paciente> pacientesCanDonate = pacientes.stream()
@@ -164,6 +170,12 @@ public class StatisticsServiceImpl implements StatisticsService {
         });
 
         return new BloodStatisticDTO(bloodData, pacientesCanDonate.size(), pacientes.size());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Object getTotalCount() {
+        return new TotalCountDTO(this.pacienteRepository.findAll().size());
     }
 
 

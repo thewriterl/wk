@@ -17,4 +17,6 @@ public interface StatisticsService {
     Object getBloodTotalData();
 
     Object getBloodTypeData();
+
+    Object getTotalCount();
 }
