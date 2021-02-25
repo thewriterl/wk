@@ -34,12 +34,14 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public HashMap<String, Integer> getStatisticsForUsersByState() {
-        HashMap<String, Integer> response = new HashMap<>();
+    public List<EstadoEstatisticDTO> getStatisticsForUsersByState() {
         List<Paciente> pacientes = pacienteRepository.findAll();
-        List<Estado> estados = pacientes.stream().map(o -> o.getEndereco().getEstado()).collect(Collectors.toList());
-        estados.forEach(estado -> response.put(estado.getUf(), (int) pacientes.stream().filter(o -> o.getEndereco().getEstado().equals(estado)).count()));
-        return response;
+        List<Estado> estados = pacientes.stream().map(o -> o.getEndereco().getEstado()).distinct().collect(Collectors.toList());
+        return estados.stream()
+                .map(estado -> new EstadoEstatisticDTO(estado.getUf(), (int) pacientes.stream()
+                                .filter(o -> o.getEndereco().getEstado().equals(estado))
+                                .count()))
+                .collect(Collectors.toList());
     }
 
     private static double calculateIMC(Paciente paciente) {
@@ -59,7 +61,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         Double mediaIMC = pacientesOnRange.stream().mapToDouble(StatisticsServiceImpl::calculateIMC).sum() / pacientesOnRange.size();
 
         IMCAgeRangeDTO dto = new IMCAgeRangeDTO();
-//        dto.setPacientes(pacientesOnRange);
+        dto.setPacientes(pacientesOnRange);
         dto.setIMCmedio(mediaIMC);
 
         return dto;
@@ -69,7 +71,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     public List<IMCMediaDTO> getIMCRateByAge() {
         List<Paciente> pacientes = pacienteRepository.findAll();
         Integer minAge = 0;
-        Integer maxAge = 10;
+        int maxAge = 10;
         List<IMCMediaDTO> dto = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             dto.add(new IMCMediaDTO(minAge + " - " + maxAge, calculateIMCWithAgeRange(pacientes, minAge, maxAge)));
@@ -91,12 +93,12 @@ public class StatisticsServiceImpl implements StatisticsService {
                 .filter(o -> o.getSexo().equals(PacienteSexo.FEMININO))
                 .collect(Collectors.toList());
 
-        Float porcentagemMasculinos = (float) (masculinos.stream()
+        float porcentagemMasculinos = (float) (masculinos.stream()
                                                         .mapToDouble(StatisticsServiceImpl::calculateIMC)
                                                         .filter(imc -> imc >= 30)
                                                         .count()) / masculinos.size();
 
-        Float porcentagemFemininos = (float) (femininos.stream()
+        float porcentagemFemininos = (float) (femininos.stream()
                                                         .mapToDouble(StatisticsServiceImpl::calculateIMC)
                                                         .filter(imc -> imc >= 30)
                                                         .count()) / femininos.size();
