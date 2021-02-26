@@ -9,11 +9,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import wk.technology.test.imccalc.domain.Estado;
 import wk.technology.test.imccalc.domain.Paciente;
+import wk.technology.test.imccalc.domain.enums.MensagemErro;
 import wk.technology.test.imccalc.repository.PacienteRepository;
 import wk.technology.test.imccalc.resource.PacienteResource;
 import wk.technology.test.imccalc.service.EstadoService;
 import wk.technology.test.imccalc.service.PacienteService;
 import wk.technology.test.imccalc.service.dto.PacienteDemoDTO;
+import wk.technology.test.imccalc.utils.WKException;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -66,6 +68,9 @@ public class PacienteServiceImpl implements PacienteService {
 
     @Override
     public void cadastrarViaJson(List<PacienteDemoDTO> dto) {
+        if (this.pacienteRepository.findAll().size() >= 300) {
+            return;
+        }
         List<Paciente> pacientes = dto.stream().map(Paciente::new).collect(Collectors.toList());
         this.pacienteRepository.saveAll(pacientes);
     }
