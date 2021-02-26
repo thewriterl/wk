@@ -20,4 +20,4 @@ TROUBLESHOOTING:
 	caso queria trocar nome do banco de dados: 
 			
 			
-			altere o campo *spring.datasource.url* para jdbc:mysql://localhost:3306/{novo nome desejado}
+			altere o campo *spring.datasource.url*  do arquivo application.properties para jdbc:mysql://localhost:3306/{novo nome desejado}
