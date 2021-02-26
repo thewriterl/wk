@@ -7,27 +7,49 @@ import com.google.gson.annotations.SerializedName;
 public class PacienteDemoDTO {
 
     public String nome;
+
     public String cpf;
+
     public String rg;
+
     @JsonProperty("data_nasc")
+    @SerializedName("data_nasc")
     public String dataNasc;
+
     public String sexo;
+
     public String mae;
+
     public String pai;
+
     public String email;
+
     public String cep;
+
     public String endereco;
+
     public Integer numero;
+
     public String bairro;
+
     public String cidade;
+
     public String estado;
+
     @JsonProperty("telefone_fixo")
+    @SerializedName("telefone_fixo")
     public String telefoneFixo;
+
     public String celular;
+
     public Float altura;
+
     public Integer peso;
+
     @JsonProperty("tipo_sanguineo")
+    @SerializedName("tipo_sanguineo")
     public String tipoSanguineo;
+
 
     public PacienteDemoDTO() {
         super();

@@ -10,4 +10,6 @@ public interface PacienteService {
 
     List<Paciente> cadastrarJsonDemoWK(@RequestBody List<PacienteDemoDTO> dto);
 
+    void cadastrarViaJson(List<PacienteDemoDTO> dto);
+
 }
